@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Training Repository</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #f0ede8;
+    --border: #e2ddd7;
+    --accent: #c0392b;
+    --accent2: #e74c3c;
+    --accent-light: #fdecea;
+    --text: #1a1816;
+    --text2: #6b6560;
+    --text3: #9e9891;
+    --admin-accent: #1a4f6e;
+    --admin-light: #e8f2f8;
+    --success: #27ae60;
+    --warning: #f39c12;
+    --tag-soft: #fef3e2;
+    --tag-soft-text: #b7570a;
+    --tag-tech: #e8f5e9;
+    --tag-tech-text: #2e7d32;
+    --tag-med: #e3f2fd;
+    --tag-med-text: #1565c0;
+    --tag-domain: #f3e5f5;
+    --tag-domain-text: #6a1b9a;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+    --shadow: 0 4px 16px rgba(0,0,0,.08);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,.12);
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ---- TOP BAR ---- */
+  .topbar {
+    background: var(--text);
+    color: #fff;
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 48px;
+    font-size: 13px;
+  }
+  .topbar-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    color: #fff;
+    font-weight: 700;
+  }
+  .topbar-logo span { color: var(--accent2); }
+  .topbar-sep { width: 1px; height: 20px; background: rgba(255,255,255,.2); }
+  .topbar-site { color: rgba(255,255,255,.6); }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .role-badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .role-admin { background: var(--accent); color: #fff; }
+  .role-employee { background: #2c5f7e; color: #fff; }
+  .avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff;
+  }
+  .user-name { color: rgba(255,255,255,.85); font-size: 12px; }
+
+  /* ---- ROLE SWITCHER ---- */
+  .role-switcher {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 28px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text2);
+  }
+  .role-btn {
+    padding: 4px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text2);
+    transition: all .2s;
+  }
+  .role-btn.active-admin { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .role-btn.active-employee { border-color: var(--admin-accent); background: var(--admin-accent); color: #fff; }
+  .role-btn:hover:not(.active-admin):not(.active-employee) { border-color: var(--text3); color: var(--text); }
+
+  /* ---- HEADER ---- */
+  .header {
+    background: var(--surface);
+    padding: 20px 28px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+  .page-meta {
+    font-size: 13px;
+    color: var(--text2);
+    margin-top: 2px;
+  }
+  .header-actions { display: flex; gap: 10px; align-items: center; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all .2s;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--border); }
+  .btn-admin { background: var(--admin-accent); color: #fff; }
+  .btn-admin:hover { background: #1d5d82; }
+  .btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--surface2); color: var(--text); }
+  .btn-icon { padding: 8px; }
+  .btn svg { width: 15px; height: 15px; }
+
+  /* ---- SEARCH & FILTERS ---- */
+  .controls-bar {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 240px;
+    max-width: 400px;
+  }
+  .search-icon {
+    position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+    color: var(--text3);
+    pointer-events: none;
+  }
+  .search-input {
+    width: 100%;
+    padding: 8px 12px 8px 34px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text3); }
+
+  .filter-select {
+    padding: 8px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+    min-width: 130px;
+  }
+  .filter-select:focus { border-color: var(--accent); }
+
+  .results-count {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--text2);
+    white-space: nowrap;
+  }
+
+  /* ---- VIEW TABS ---- */
+  .view-tabs {
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+    padding: 0 28px;
+    display: flex;
+    gap: 0;
+  }
+  .view-tab {
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all .2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .view-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .view-tab:hover:not(.active) { color: var(--text); }
+  .tab-count {
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 1px 7px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .view-tab.active .tab-count { background: var(--accent-light); color: var(--accent); }
+
+  /* ---- MAIN LAYOUT ---- */
+  .main-layout {
+    display: flex;
+    height: calc(100vh - 230px);
+    overflow: hidden;
+  }
+
+  /* ---- TABLE AREA ---- */
+  .table-area {
+    flex: 1;
+    overflow-y: auto;
+    transition: all .3s ease;
+  }
+  .table-area.with-panel { flex: 0 0 60%; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead tr {
+    background: var(--surface2);
+    border-bottom: 2px solid var(--border);
+    position: sticky; top: 0; z-index: 5;
+  }
+  th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text2);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  th:hover { color: var(--text); }
+  th .sort-icon { opacity: .4; font-size: 10px; margin-left: 3px; }
+  th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    transition: background .15s;
+    cursor: pointer;
+  }
+  tbody tr:hover { background: #fdf9f8; }
+  tbody tr.selected { background: var(--accent-light) !important; }
+  tbody tr.selected td { color: var(--text); }
+
+  td {
+    padding: 11px 14px;
+    vertical-align: middle;
+  }
+
+  .thumb-cell { width: 64px; }
+  .thumb {
+    width: 56px; height: 38px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .thumb-play {
+    position: absolute;
+    width: 18px; height: 18px;
+    background: rgba(0,0,0,.55);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 7px;
+    padding-left: 2px;
+  }
+  .thumb-icon {
+    color: var(--text3);
+  }
+
+  .title-cell {
+    font-weight: 500;
+    color: var(--text);
+    max-width: 200px;
+  }
+  .title-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    display: block;
+    line-height: 1.4;
+  }
+  .title-link:hover { text-decoration: underline; }
+  .file-name { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+  .category-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .cat-soft { background: var(--tag-soft); color: var(--tag-soft-text); }
+  .cat-technical { background: var(--tag-tech); color: var(--tag-tech-text); }
+  .cat-medical { background: var(--tag-med); color: var(--tag-med-text); }
+  .cat-domain { background: var(--tag-domain); color: var(--tag-domain-text); }
+  .cat-default { background: var(--surface2); color: var(--text2); }
+
+  .trainer-cell {
+    display: flex; align-items: center; gap: 7px;
+  }
+  .trainer-avatar {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3498db, #1a4f6e);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+  .trainer-name { font-size: 12px; }
+
+  .duration-cell {
+    font-size: 12px;
+    color: var(--text2);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .date-cell {
+    font-size: 12px;
+    color: var(--text2);
+    white-space: nowrap;
+  }
+
+  .action-cell { display: flex; gap: 6px; align-items: center; }
+  .action-btn {
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    display: inline-flex; align-items: center; gap: 4px;
+    color: var(--text2);
+    transition: all .15s;
+  }
+  .action-btn:hover { background: var(--surface2); color: var(--text); }
+  .action-btn.play { color: var(--accent); border-color: var(--accent-light); }
+  .action-btn.play:hover { background: var(--accent-light); }
+  .action-btn.edit { color: var(--admin-accent); border-color: var(--admin-light); }
+  .action-btn.edit:hover { background: var(--admin-light); }
+  .action-btn.delete { color: #c0392b; border-color: #fdecea; }
+  .action-btn.delete:hover { background: #fdecea; }
+
+  /* ---- DETAIL PANEL ---- */
+  .detail-panel {
+    width: 380px;
+    border-left: 2px solid var(--border);
+    background: var(--surface);
+    overflow-y: auto;
+    flex-shrink: 0;
+    display: none;
+    flex-direction: column;
+    transition: all .3s;
+  }
+  .detail-panel.open { display: flex; }
+
+  .panel-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    background: var(--surface2);
+  }
+  .panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.3;
+    flex: 1;
+  }
+  .panel-close {
+    background: none; border: none; cursor: pointer;
+    color: var(--text2); font-size: 18px; line-height: 1;
+    padding: 2px 4px;
+    border-radius: 4px;
+  }
+  .panel-close:hover { background: var(--border); }
+
+  .panel-video {
+    margin: 16px 20px;
+    background: #111;
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    aspect-ratio: 16/9;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .panel-video-thumb {
+    width: 100%; height: 100%; object-fit: cover; opacity: .7;
+    position: absolute;
+  }
+  .panel-play-btn {
+    position: relative; z-index: 2;
+    width: 52px; height: 52px;
+    background: rgba(255,255,255,.15);
+    border: 2px solid rgba(255,255,255,.6);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 20px;
+    padding-left: 4px;
+    transition: all .2s;
+    backdrop-filter: blur(4px);
+  }
+  .panel-video:hover .panel-play-btn { background: rgba(192,57,43,.7); border-color: rgba(192,57,43,.8); transform: scale(1.05); }
+  .panel-play-label {
+    position: absolute; bottom: 10px; left: 10px; z-index: 2;
+    color: #fff; font-size: 11px; font-weight: 500;
+    background: rgba(0,0,0,.4);
+    padding: 3px 8px; border-radius: 4px;
+    backdrop-filter: blur(4px);
+  }
+
+  .panel-body { padding: 0 20px 20px; }
+  .panel-section { margin-bottom: 18px; }
+  .panel-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+  .panel-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text2);
+  }
+  .panel-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .panel-meta-item {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+  }
+  .panel-meta-label { font-size: 10px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .panel-meta-value { font-size: 13px; color: var(--text); font-weight: 500; margin-top: 3px; }
+
+  .trainer-card {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+  }
+  .trainer-card-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+  .trainer-card-name { font-weight: 600; font-size: 14px; }
+  .trainer-card-type { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+  .panel-cta {
+    display: flex; gap: 8px; margin-top: 4px;
+  }
+  .panel-cta .btn { flex: 1; justify-content: center; font-size: 13px; }
+
+  /* ---- VIDEO MODAL ---- */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.85);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    animation: fadeIn .2s ease;
+  }
+  .modal-overlay.open { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal-box {
+    background: #0e0e0e;
+    border-radius: 14px;
+    overflow: hidden;
+    width: 90vw;
+    max-width: 900px;
+    box-shadow: 0 40px 100px rgba(0,0,0,.6);
+    animation: slideUp .25s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .modal-title { color: #fff; font-size: 15px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .modal-title-dot { width: 8px; height: 8px; background: var(--accent2); border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+  .modal-close {
+    background: rgba(255,255,255,.1); border: none; border-radius: 6px;
+    color: #fff; cursor: pointer; padding: 5px 10px; font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    transition: background .2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .modal-close:hover { background: rgba(255,255,255,.18); }
+
+  .modal-video-area {
+    position: relative;
+    background: #000;
+    aspect-ratio: 16/9;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-video-area video {
+    width: 100%; height: 100%;
+    display: block;
+  }
+  .modal-no-video {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    color: rgba(255,255,255,.4);
+    font-size: 14px;
+  }
+  .modal-no-video svg { width: 48px; height: 48px; opacity: .3; }
+
+  .modal-footer {
+    padding: 12px 20px;
+    display: flex; align-items: center; gap: 14px;
+    border-top: 1px solid rgba(255,255,255,.08);
+  }
+  .modal-info { flex: 1; }
+  .modal-info-title { color: rgba(255,255,255,.9); font-size: 14px; font-weight: 500; }
+  .modal-info-meta { color: rgba(255,255,255,.4); font-size: 12px; margin-top: 2px; }
+  .modal-open-link {
+    color: rgba(255,255,255,.6); font-size: 12px;
+    display: flex; align-items: center; gap: 5px;
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 6px;
+    transition: all .2s;
+  }
+  .modal-open-link:hover { background: rgba(255,255,255,.08); color: #fff; }
+
+  /* ---- ADMIN FORM MODAL ---- */
+  .form-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.6);
+    z-index: 900;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+  }
+  .form-modal-overlay.open { display: flex; }
+  .form-modal {
+    background: var(--surface);
+    border-radius: 14px;
+    width: 540px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp .2s ease;
+  }
+  .form-modal-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .form-modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px; font-weight: 600;
+  }
+  .form-modal-body { padding: 20px 24px; }
+  .form-row { margin-bottom: 16px; }
+  .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    background: var(--surface);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+  .form-textarea { resize: vertical; min-height: 80px; }
+  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-modal-footer {
+    padding: 14px 24px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: flex-end; gap: 10px;
+  }
+
+  /* ---- EMPTY STATE ---- */
+  .empty-state {
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--text2);
+  }
+  .empty-state svg { width: 48px; height: 48px; color: var(--text3); margin-bottom: 12px; }
+  .empty-state h3 { font-size: 16px; font-weight: 500; margin-bottom: 6px; }
+  .empty-state p { font-size: 13px; }
+
+  /* ---- SCROLLBAR ---- */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+  /* ---- NOTIFICATION TOAST ---- */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--text);
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all .3s;
+    z-index: 2000;
+    display: flex; align-items: center; gap: 8px;
+    max-width: 300px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast-success { border-left: 3px solid var(--success); }
+  .toast-error { border-left: 3px solid var(--accent); }
+
+  /* ---- ADMIN INDICATOR ---- */
+  .admin-only { display: none; }
+  body.role-admin .admin-only { display: flex; }
+  body.role-admin .admin-only-inline { display: inline-flex; }
+  .admin-only-inline { display: none; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .detail-panel { width: 100%; position: fixed; right: 0; top: 0; bottom: 0; z-index: 100; }
+    .table-area.with-panel { flex: 1; }
+  }
+</style>
+</head>
+<body class="role-admin">
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <span class="topbar-logo">TR<span>.</span></span>
+  <span class="topbar-sep"></span>
+  <span class="topbar-site">Intranet · Training Group</span>
+  <div class="topbar-right">
+    <span class="role-badge role-admin" id="topRoleBadge">Admin</span>
+    <span class="user-name" id="topUserName">Jayalekshmi R</span>
+    <div class="avatar" id="topAvatar">JR</div>
+  </div>
+</div>
+
+<!-- ROLE SWITCHER (demo) -->
+<div class="role-switcher">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+  Demo role view:
+  <button class="role-btn active-admin" id="btnAdmin" onclick="setRole('admin')">Admin View</button>
+  <button class="role-btn" id="btnEmployee" onclick="setRole('employee')">Employee View</button>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1 class="page-title">Training Repository</h1>
+      <p class="page-meta">Centralized learning hub · <span id="totalCount">5</span> recordings available</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-admin admin-only" onclick="openAddForm()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Upload Training
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls-bar">
+  <div class="search-wrap">
+    <span class="search-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </span>
+    <input class="search-input" type="text" placeholder="Search by title, trainer, topic…" id="searchInput" oninput="filterTable()">
+  </div>
+  <select class="filter-select" id="catFilter" onchange="filterTable()">
+    <option value="">All Categories</option>
+    <option value="Soft Skills">Soft Skills</option>
+    <option value="Technical">Technical</option>
+    <option value="Medical">Medical</option>
+    <option value="Domain">Domain</option>
+  </select>
+  <select class="filter-select" id="monthFilter" onchange="filterTable()">
+    <option value="">All Dates</option>
+    <option value="2026-02">Feb 2026</option>
+    <option value="2026-01">Jan 2026</option>
+    <option value="2025-12">Dec 2025</option>
+  </select>
+  <span class="results-count" id="resultsCount">Showing 5 of 5</span>
+</div>
+
+<!-- TABS -->
+<div class="view-tabs">
+  <button class="view-tab active">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    All Recordings <span class="tab-count" id="tabCount">5</span>
+  </button>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout">
+  <!-- TABLE AREA -->
+  <div class="table-area" id="tableArea">
+    <table>
+      <thead>
+        <tr>
+          <th class="thumb-cell"></th>
+          <th onclick="sortTable('title')">Training Title <span class="sort-icon">↕</span></th>
+          <th onclick="sortTable('date')" class="sorted">Date <span class="sort-icon">↓</span></th>
+          <th onclick="sortTable('category')">Category <span class="sort-icon">↕</span></th>
+          <th onclick="sortTable('trainer')">Trainer <span class="sort-icon">↕</span></th>
+          <th onclick="sortTable('duration')">Duration <span class="sort-icon">↕</span></th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="empty-state" id="emptyState" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <h3>No trainings found</h3>
+      <p>Try adjusting your search or filters</p>
+    </div>
+  </div>
+
+  <!-- DETAIL PANEL -->
+  <div class="detail-panel" id="detailPanel">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title" id="panelTitle">Training Details</div>
+        <div style="margin-top:6px" id="panelCatTag"></div>
+      </div>
+      <button class="panel-close" onclick="closePanel()" title="Close">✕</button>
+    </div>
+    <div class="panel-video" id="panelVideoThumb" onclick="openVideoModal()">
+      <img class="panel-video-thumb" id="panelThumbImg" src="" alt="">
+      <div class="panel-play-btn">▶</div>
+      <span class="panel-play-label">Click to play</span>
+    </div>
+    <div class="panel-body">
+      <div class="panel-section">
+        <div class="panel-section-title">Description</div>
+        <div class="panel-desc" id="panelDesc">—</div>
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">Details</div>
+        <div class="panel-meta-grid">
+          <div class="panel-meta-item"><div class="panel-meta-label">Date</div><div class="panel-meta-value" id="panelDate">—</div></div>
+          <div class="panel-meta-item"><div class="panel-meta-label">Duration</div><div class="panel-meta-value" id="panelDuration">—</div></div>
+          <div class="panel-meta-item"><div class="panel-meta-label">Category</div><div class="panel-meta-value" id="panelCat">—</div></div>
+          <div class="panel-meta-item"><div class="panel-meta-label">Trainer Type</div><div class="panel-meta-value" id="panelTrainerType">—</div></div>
+        </div>
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title">Trainer</div>
+        <div class="trainer-card">
+          <div class="trainer-card-avatar" id="panelTrainerAvatar">—</div>
+          <div>
+            <div class="trainer-card-name" id="panelTrainerName">—</div>
+            <div class="trainer-card-type" id="panelTrainerRole">Internal Trainer</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-cta">
+        <button class="btn btn-primary" onclick="openVideoModal()">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Play Recording
+        </button>
+        <button class="btn btn-ghost admin-only" onclick="openEditForm()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="m18.5 2.5 2 2L12 13H10v-2L18.5 2.5z"/></svg>
+          Edit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VIDEO MODAL -->
+<div class="modal-overlay" id="videoModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">
+        <span class="modal-title-dot"></span>
+        <span id="modalTitle">Training Recording</span>
+      </div>
+      <button class="modal-close" onclick="closeVideoModal()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Close
+      </button>
+    </div>
+    <div class="modal-video-area" id="modalVideoArea">
+      <video id="modalVideo" controls>
+        <source src="" type="video/mp4">
+      </video>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-info">
+        <div class="modal-info-title" id="modalInfoTitle">—</div>
+        <div class="modal-info-meta" id="modalInfoMeta">—</div>
+      </div>
+      <a href="#" class="modal-open-link" id="modalOpenLink" target="_blank">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Open in Browser
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT FORM MODAL -->
+<div class="form-modal-overlay" id="formModal">
+  <div class="form-modal">
+    <div class="form-modal-header">
+      <span class="form-modal-title" id="formModalTitle">Upload Training</span>
+      <button class="btn btn-ghost btn-icon" onclick="closeFormModal()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="form-modal-body">
+      <div class="form-row">
+        <label class="form-label">Training Title *</label>
+        <input class="form-input" type="text" id="fTitle" placeholder="e.g. Introduction to Medical Research">
+      </div>
+      <div class="form-row-2">
+        <div class="form-row" style="margin-bottom:0">
+          <label class="form-label">Category *</label>
+          <select class="form-select" id="fCategory">
+            <option value="Soft Skills">Soft Skills</option>
+            <option value="Technical">Technical</option>
+            <option value="Medical">Medical</option>
+            <option value="Domain">Domain</option>
+          </select>
+        </div>
+        <div class="form-row" style="margin-bottom:0">
+          <label class="form-label">Training Date *</label>
+          <input class="form-input" type="date" id="fDate">
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-row" style="margin-bottom:0;margin-top:16px">
+          <label class="form-label">Trainer Name *</label>
+          <input class="form-input" type="text" id="fTrainer" placeholder="Full name">
+        </div>
+        <div class="form-row" style="margin-bottom:0;margin-top:16px">
+          <label class="form-label">Duration</label>
+          <input class="form-input" type="text" id="fDuration" placeholder="e.g. 2 hrs, 45 mins">
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:16px">
+        <label class="form-label">Trainer Type</label>
+        <select class="form-select" id="fTrainerType">
+          <option value="Internal">Internal</option>
+          <option value="External">External</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Training Description</label>
+        <textarea class="form-textarea" id="fDesc" placeholder="Brief description of what this training covers…"></textarea>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Recording URL (SharePoint / OneDrive)</label>
+        <input class="form-input" type="url" id="fVideoUrl" placeholder="https://…sharepoint.com/…">
+      </div>
+    </div>
+    <div class="form-modal-footer">
+      <button class="btn btn-secondary" onclick="closeFormModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTraining()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="saveLabel">Save Training</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- DATA ----
+let trainings = [
+  {
+    id: 1,
+    title: "New Training",
+    fileName: "Tr1.mp4",
+    category: "Soft Skills",
+    trainer: "Jayalekshmi R",
+    trainerType: "Internal",
+    duration: "2 hrs",
+    date: "2026-02-18",
+    desc: "New training description covering essential soft skills for workplace communication and team collaboration.",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    thumbColor: "#e74c3c"
+  },
+  {
+    id: 2,
+    title: "Medical Research",
+    fileName: "Tr2.mp4",
+    category: "Medical",
+    trainer: "Ranjani Parameswaran",
+    trainerType: "Internal",
+    duration: "3 hrs",
+    date: "2026-02-19",
+    desc: "Comprehensive overview of medical research methodologies, data collection practices, and regulatory compliance in healthcare settings.",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    thumbColor: "#3498db"
+  },
+  {
+    id: 3,
+    title: "Inner Health Revealed",
+    fileName: "sintel-hd.avi",
+    category: "Medical",
+    trainer: "Dr. Priya Nair",
+    trainerType: "External",
+    duration: "1.5 hrs",
+    date: "2026-01-15",
+    desc: "An in-depth exploration of internal health diagnostics and preventive care strategies for healthcare professionals.",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
+    thumbColor: "#27ae60"
+  },
+  {
+    id: 4,
+    title: "Advanced Excel for HR",
+    fileName: "Tr3.mp4",
+    category: "Technical",
+    trainer: "Anita Krishnan",
+    trainerType: "Internal",
+    duration: "2.5 hrs",
+    date: "2026-01-22",
+    desc: "Hands-on Excel training covering pivot tables, VLOOKUP, and data visualization techniques specifically tailored for HR analytics.",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    thumbColor: "#9b59b6"
+  },
+  {
+    id: 5,
+    title: "Leadership & Influence",
+    fileName: "Tr4.mp4",
+    category: "Soft Skills",
+    trainer: "Sundar Rajan",
+    trainerType: "External",
+    duration: "3.5 hrs",
+    date: "2025-12-10",
+    desc: "Explore leadership styles, stakeholder management, and building influence in cross-functional teams.",
+    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    thumbColor: "#f39c12"
+  }
+];
+
+let currentRole = 'admin';
+let selectedId = null;
+let editingId = null;
+let filteredData = [...trainings];
+let sortCol = 'date', sortDir = -1;
+
+// ---- ROLE MANAGEMENT ----
+function setRole(role) {
+  currentRole = role;
+  document.body.className = 'role-' + role;
+  document.getElementById('btnAdmin').className = 'role-btn' + (role === 'admin' ? ' active-admin' : '');
+  document.getElementById('btnEmployee').className = 'role-btn' + (role === 'employee' ? ' active-employee' : '');
+  document.getElementById('topRoleBadge').className = 'role-badge role-' + role;
+  document.getElementById('topRoleBadge').textContent = role === 'admin' ? 'Admin' : 'Employee';
+  if (role === 'employee') {
+    document.getElementById('topUserName').textContent = 'Employee User';
+    document.getElementById('topAvatar').textContent = 'EU';
+    document.getElementById('topAvatar').style.background = 'linear-gradient(135deg, #1a4f6e, #2c5f7e)';
+  } else {
+    document.getElementById('topUserName').textContent = 'Jayalekshmi R';
+    document.getElementById('topAvatar').textContent = 'JR';
+    document.getElementById('topAvatar').style.background = '';
+  }
+  renderTable();
+}
+
+// ---- HELPERS ----
+function getCatClass(cat) {
+  const map = { 'Soft Skills': 'cat-soft', 'Technical': 'cat-technical', 'Medical': 'cat-medical', 'Domain': 'cat-domain' };
+  return map[cat] || 'cat-default';
+}
+
+function initials(name) {
+  return name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+}
+
+function formatDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d + 'T00:00:00');
+  return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function svgThumb(color) {
+  return `<div style="background:${color};width:100%;height:100%;display:flex;align-items:center;justify-content:center;opacity:.7">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+  </div>`;
+}
+
+// ---- RENDER TABLE ----
+function renderTable() {
+  const tbody = document.getElementById('tableBody');
+  const empty = document.getElementById('emptyState');
+  const isAdmin = currentRole === 'admin';
+
+  // Employee hidden columns: actions (edit/delete only), trainer type
+  const data = filteredData;
+  document.getElementById('tabCount').textContent = data.length;
+  document.getElementById('resultsCount').textContent = `Showing ${data.length} of ${trainings.length}`;
+  document.getElementById('totalCount').textContent = trainings.length;
+
+  if (data.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = data.map(t => {
+    const isSelected = t.id === selectedId;
+    const catClass = getCatClass(t.category);
+    const trainerInit = initials(t.trainer);
+
+    const adminActions = isAdmin ? `
+      <button class="action-btn edit" onclick="openEditForm(${t.id});event.stopPropagation()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="m18.5 2.5 2 2L12 13H10v-2L18.5 2.5z"/></svg>
+        Edit
+      </button>
+      <button class="action-btn delete" onclick="deleteTraining(${t.id});event.stopPropagation()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        Delete
+      </button>` : '';
+
+    return `<tr class="${isSelected ? 'selected' : ''}" onclick="selectRow(${t.id})">
+      <td class="thumb-cell">
+        <div class="thumb" ondblclick="openVideoFromRow(${t.id});event.stopPropagation()" title="Double-click to play">
+          ${svgThumb(t.thumbColor)}
+          <div class="thumb-play">▶</div>
+        </div>
+      </td>
+      <td class="title-cell">
+        <a class="title-link" href="#" onclick="selectRow(${t.id});return false">${t.title}</a>
+        <div class="file-name">${t.fileName}</div>
+      </td>
+      <td class="date-cell">${formatDate(t.date)}</td>
+      <td><span class="category-tag ${catClass}">${t.category || '—'}</span></td>
+      <td>
+        <div class="trainer-cell">
+          <div class="trainer-avatar" style="background:linear-gradient(135deg,${t.thumbColor},${t.thumbColor}aa)">${trainerInit}</div>
+          <span class="trainer-name">${t.trainer}</span>
+        </div>
+      </td>
+      <td class="duration-cell">${t.duration || '—'}</td>
+      <td>
+        <div class="action-cell">
+          <button class="action-btn play" onclick="openVideoFromRow(${t.id});event.stopPropagation()">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Play
+          </button>
+          ${adminActions}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ---- SELECT ROW / PANEL ----
+function selectRow(id) {
+  if (selectedId === id) { closePanel(); return; }
+  selectedId = id;
+  const t = trainings.find(x => x.id === id);
+  if (!t) return;
+
+  document.getElementById('panelTitle').textContent = t.title;
+  document.getElementById('panelCatTag').innerHTML = `<span class="category-tag ${getCatClass(t.category)}">${t.category}</span>`;
+  document.getElementById('panelDesc').textContent = t.desc || 'No description available.';
+  document.getElementById('panelDate').textContent = formatDate(t.date);
+  document.getElementById('panelDuration').textContent = t.duration || '—';
+  document.getElementById('panelCat').textContent = t.category || '—';
+  document.getElementById('panelTrainerType').textContent = t.trainerType || '—';
+  document.getElementById('panelTrainerName').textContent = t.trainer;
+  document.getElementById('panelTrainerAvatar').textContent = initials(t.trainer);
+  document.getElementById('panelTrainerAvatar').style.background = `linear-gradient(135deg, ${t.thumbColor}, ${t.thumbColor}aa)`;
+  document.getElementById('panelTrainerRole').textContent = t.trainerType + ' Trainer';
+
+  // Video thumb
+  const thumbImg = document.getElementById('panelThumbImg');
+  thumbImg.style.display = 'none';
+  document.getElementById('panelVideoThumb').style.background = `linear-gradient(135deg, ${t.thumbColor}33, #111)`;
+
+  document.getElementById('detailPanel').classList.add('open');
+  document.getElementById('tableArea').classList.add('with-panel');
+  renderTable();
+}
+
+function closePanel() {
+  selectedId = null;
+  document.getElementById('detailPanel').classList.remove('open');
+  document.getElementById('tableArea').classList.remove('with-panel');
+  renderTable();
+}
+
+// ---- VIDEO MODAL ----
+function openVideoModal() {
+  if (!selectedId) return;
+  openVideoFromRow(selectedId);
+}
+
+function openVideoFromRow(id) {
+  const t = trainings.find(x => x.id === id);
+  if (!t) return;
+
+  document.getElementById('modalTitle').textContent = t.title;
+  document.getElementById('modalInfoTitle').textContent = t.title;
+  document.getElementById('modalInfoMeta').textContent = `${t.trainer} · ${t.category} · ${t.duration}`;
+  document.getElementById('modalOpenLink').href = t.videoUrl || '#';
+
+  const video = document.getElementById('modalVideo');
+  if (t.videoUrl) {
+    video.style.display = 'block';
+    document.getElementById('modalVideoArea').innerHTML = `
+      <video id="modalVideo" controls autoplay style="width:100%;height:100%;display:block;background:#000">
+        <source src="${t.videoUrl}" type="video/mp4">
+        Your browser does not support video.
+      </video>`;
+  } else {
+    document.getElementById('modalVideoArea').innerHTML = `
+      <div class="modal-no-video">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        <span>Recording link not available</span>
+      </div>`;
+  }
+
+  document.getElementById('videoModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeVideoModal() {
+  document.getElementById('videoModal').classList.remove('open');
+  document.body.style.overflow = '';
+  const area = document.getElementById('modalVideoArea');
+  area.innerHTML = `<div class="modal-no-video"></div>`;
+}
+
+// Close modal on overlay click
+document.getElementById('videoModal').addEventListener('click', function(e) {
+  if (e.target === this) closeVideoModal();
+});
+
+// ---- FILTER & SORT ----
+function filterTable() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const cat = document.getElementById('catFilter').value;
+  const month = document.getElementById('monthFilter').value;
+
+  filteredData = trainings.filter(t => {
+    const matchQ = !q || t.title.toLowerCase().includes(q) || t.trainer.toLowerCase().includes(q) || (t.desc||'').toLowerCase().includes(q) || (t.category||'').toLowerCase().includes(q);
+    const matchCat = !cat || t.category === cat;
+    const matchMonth = !month || (t.date && t.date.startsWith(month));
+    return matchQ && matchCat && matchMonth;
+  });
+
+  sortData();
+  renderTable();
+}
+
+function sortTable(col) {
+  if (sortCol === col) { sortDir *= -1; }
+  else { sortCol = col; sortDir = -1; }
+  sortData();
+  renderTable();
+}
+
+function sortData() {
+  filteredData.sort((a, b) => {
+    let av = a[sortCol] || '', bv = b[sortCol] || '';
+    if (sortCol === 'date') return av > bv ? sortDir : -sortDir;
+    return av.toString().localeCompare(bv.toString()) * sortDir;
+  });
+}
+
+// ---- ADMIN FORM ----
+function openAddForm() {
+  editingId = null;
+  document.getElementById('formModalTitle').textContent = 'Upload Training';
+  document.getElementById('saveLabel').textContent = 'Save Training';
+  document.getElementById('fTitle').value = '';
+  document.getElementById('fCategory').value = 'Soft Skills';
+  document.getElementById('fDate').value = '';
+  document.getElementById('fTrainer').value = '';
+  document.getElementById('fDuration').value = '';
+  document.getElementById('fTrainerType').value = 'Internal';
+  document.getElementById('fDesc').value = '';
+  document.getElementById('fVideoUrl').value = '';
+  document.getElementById('formModal').classList.add('open');
+}
+
+function openEditForm(id) {
+  const tid = id || selectedId;
+  if (!tid) return;
+  const t = trainings.find(x => x.id === tid);
+  if (!t) return;
+  editingId = t.id;
+
+  document.getElementById('formModalTitle').textContent = 'Edit Training';
+  document.getElementById('saveLabel').textContent = 'Update Training';
+  document.getElementById('fTitle').value = t.title;
+  document.getElementById('fCategory').value = t.category;
+  document.getElementById('fDate').value = t.date;
+  document.getElementById('fTrainer').value = t.trainer;
+  document.getElementById('fDuration').value = t.duration;
+  document.getElementById('fTrainerType').value = t.trainerType;
+  document.getElementById('fDesc').value = t.desc;
+  document.getElementById('fVideoUrl').value = t.videoUrl || '';
+  document.getElementById('formModal').classList.add('open');
+}
+
+function closeFormModal() {
+  document.getElementById('formModal').classList.remove('open');
+}
+
+function saveTraining() {
+  const title = document.getElementById('fTitle').value.trim();
+  if (!title) { showToast('Training title is required', 'error'); return; }
+  
+  const data = {
+    title,
+    category: document.getElementById('fCategory').value,
+    date: document.getElementById('fDate').value,
+    trainer: document.getElementById('fTrainer').value.trim() || 'Unknown',
+    duration: document.getElementById('fDuration').value.trim(),
+    trainerType: document.getElementById('fTrainerType').value,
+    desc: document.getElementById('fDesc').value.trim(),
+    videoUrl: document.getElementById('fVideoUrl').value.trim(),
+  };
+
+  const colors = ['#e74c3c','#3498db','#27ae60','#9b59b6','#f39c12','#1abc9c','#e67e22'];
+
+  if (editingId) {
+    const idx = trainings.findIndex(x => x.id === editingId);
+    trainings[idx] = { ...trainings[idx], ...data };
+    showToast('Training updated successfully', 'success');
+  } else {
+    const newId = Math.max(...trainings.map(x => x.id)) + 1;
+    trainings.push({ id: newId, fileName: title.replace(/\s+/g,'_').toLowerCase() + '.mp4', thumbColor: colors[newId % colors.length], ...data });
+    showToast('Training added successfully', 'success');
+  }
+
+  closeFormModal();
+  filterTable();
+}
+
+function deleteTraining(id) {
+  if (!confirm('Delete this training record?')) return;
+  trainings = trainings.filter(x => x.id !== id);
+  if (selectedId === id) closePanel();
+  filterTable();
+  showToast('Training deleted', 'success');
+}
+
+// ---- TOAST ----
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast toast-${type} show`;
+  setTimeout(() => { t.className = 'toast'; }, 3000);
+}
+
+// ---- INIT ----
+filteredData = [...trainings];
+sortData();
+renderTable();
+
+// ESC close
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeVideoModal(); closeFormModal(); }
+});
+</script>
+</body>
+</html>
